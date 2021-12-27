@@ -1,25 +1,36 @@
 const http = require("http");
+const fs = require("fs");
 const port = process.env.PORT || 3000;
+
+const serveStaticFile = (res, path, contentType, responseCode = 200) => {
+  fs.readFile(__dirname + path, (err, data) => {
+    if (err) {
+      res.writeHead(500, { "content-Type": "text/plain" });
+      return res.end("500-Internal error");
+    }
+    res.writeHead(responseCode, { "Content-Type": contentType });
+    res.end(data);
+  });
+};
 
 const server = http.createServer((req, res) => {
   const path = req.url.replace(/\/$/, "").toLowerCase();
   switch (path) {
     case "":
-      res.writeHead(200, { "content-Type": "text/plain" });
-      res.end("Welcome to our Node Application");
+      serveStaticFile(res, "/public/home.html", "text/html");
       break;
     case "/about":
-      res.writeHead(200, { "content-Type": "text/plain" });
-      res.end("Our About page here!!!!");
+      serveStaticFile(res, "/public/about.html", "text/html");
       break;
     case "/contact":
-      res.writeHead(200, { "content-Type": "text/plain" });
-      res.end("Your contact page here!!!!");
+      serveStaticFile(res, "/public/contact.html", "text/html");
       break;
     default:
-      res.writeHead(404, { "content-Type": "text/plain" });
-      res.end("Sorry, we couldn't the page your looking for ): ");
+      serveStaticFile(res, "/public/404.html", "text/html", 404);
+      break;
   }
 });
 
-server.listen(port, () => console.log(`The server is running on port ${port}`));
+server.listen(port, () => {
+  console.log(`Server is runing at the port ${port} press ctrl C to exit`);
+});
