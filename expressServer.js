@@ -3,13 +3,12 @@ const app = express();
 
 const port = process.env.PORT || 3000;
 
-var hbs = require("hbs");
-
 app.set("view engine", "hbs");
 
 app.get("/", (req, res) => res.render("home"));
 app.get("/about", (req, res) => res.render("about"));
 app.get("/contact", (req, res) => res.render("contact"));
+app.use((req, res) => res.render("style"));
 
 app.use(express.static(__dirname + "/public"));
 
@@ -25,5 +24,7 @@ app.use((req, res) => {
 });
 
 app.listen(port, () =>
-  console.log(`The server is listen at the port ${port} to exit press Ctrl & C`)
+  console.log(
+    `The server is listening at the port ${port} to cancel press Cltrl-C`
+  )
 );
